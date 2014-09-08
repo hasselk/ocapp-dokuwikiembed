@@ -26,7 +26,7 @@ namespace DWEMBED
 
 class App
 {
-  const APPNAME = 'dokuwikiembed';
+  const APP_NAME = 'dokuwikiembed';
   const RPCPATH = '/lib/exe/xmlrpc.php';
 
   private $dwProto;
@@ -107,7 +107,7 @@ class App
 
     $response = xmlrpc_decode($result);
     if (is_array($response) && xmlrpc_is_fault($response)) {
-      \OCP\Util::writeLog(self::APPNAME,
+      \OCP\Util::writeLog(self::APP_NAME,
                           "Error: xlmrpc: $response[faultString] ($response[faultCode])",
                           \OC_Log::ERROR);
       $this->authHeaders = array(); // nothing
@@ -128,14 +128,14 @@ class App
             $this->authHeaders[] = preg_replace('|path=([^;]+);|i', 'path='.\OC::$WEBROOT.'/;', $header);
           }
         }
-        \OCP\Util::writeLog(self::APPNAME,
+        \OCP\Util::writeLog(self::APP_NAME,
                             "XMLRPC method \"$method\" executed with success. Got cookies ".
                             print_r($this->authHeaders, true).
                             ". Sent cookies ".$httpHeader,
                             \OC_Log::DEBUG);
         return true;
       } else {
-        \OCP\Util::writeLog(self::APPNAME,
+        \OCP\Util::writeLog(self::APP_NAME,
                             "XMLRPC method \"$method\" failed. Got headers ".
                             print_r($responseHdr, true).
                             " data: ".$result.

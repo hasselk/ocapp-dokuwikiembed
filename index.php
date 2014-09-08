@@ -23,7 +23,7 @@
 use DWEMBED\App;
 use DWEMBED\Util;
 
-$appName = App::APPNAME;
+$appName = App::APP_NAME;
 
 // Check if we are a user
 OCP\User::checkLoggedIn();

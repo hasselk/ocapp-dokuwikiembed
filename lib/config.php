@@ -38,11 +38,11 @@ class Config
   {
     $jsAssign = &$params['array'];
 
-    $refresh = \OCP\Config::GetAppValue(App::APPNAME, 'refreshInterval', 300);
+    $refresh = \OCP\Config::GetAppValue(App::APP_NAME, 'refreshInterval', 300);
     $jsAssign['DWEmbed'] =
       "DWEmbed || {};\n".
-      "DWEmbed.appName = '".App::APPNAME."';\n".
-      "DWEmbed.refreshInterval = ".$refresh;
+      "DWEmbed.appName = '".App::APP_NAME."';\n".
+      "DWEmbed.refreshInterval = ".$refresh;    
   }
 };
 

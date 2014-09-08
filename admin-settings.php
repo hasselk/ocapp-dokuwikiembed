@@ -24,7 +24,7 @@ use DWEMBED\App;
 use DWEMBED\Util;
 use DWEMBED\L;
 
-$appName = App::APPNAME;
+$appName = App::APP_NAME;
 
 OCP\User::checkAdminUser();
 

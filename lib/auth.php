@@ -35,7 +35,7 @@ class AuthHooks
       return;
     }
 
-    $wikiLocation = \OCP\Config::GetAppValue(App::APPNAME, 'wikilocation', '');
+    $wikiLocation = \OCP\Config::GetAppValue(App::APP_NAME, 'wikilocation', '');
 
     $dokuWikiEmbed = new App($wikiLocation);
     $wikiURL = $dokuWikiEmbed->wikiURL();
@@ -45,7 +45,7 @@ class AuthHooks
 
     if ($dokuWikiEmbed->login($username, $password)) {
       $dokuWikiEmbed->emitAuthHeaders();
-      \OCP\Util::writeLog(App::APPNAME,
+      \OCP\Util::writeLog(App::APP_NAME,
                           "DokuWiki login of user ".
                           $username.
                           " probably succeeded.",
@@ -59,11 +59,11 @@ class AuthHooks
       return;
     }
 
-    $wikiLocation = \OCP\Config::GetAppValue(App::APPNAME, 'wikilocation', '');
+    $wikiLocation = \OCP\Config::GetAppValue(App::APP_NAME, 'wikilocation', '');
     $dokuWikiEmbed = new App($wikiLocation);
     if ($dokuWikiEmbed->logout()) {
       $dokuWikiEmbed->emitAuthHeaders();
-      \OCP\Util::writeLog(App::APPNAME,
+      \OCP\Util::writeLog(App::APP_NAME,
                           "DokuWiki logoff probably succeeded.",
                           \OC_Log::INFO);
     }
@@ -74,15 +74,15 @@ class AuthHooks
    */
   public static function refresh() 
   {
-    $wikiLocation = \OCP\Config::GetAppValue(App::APPNAME, 'wikilocation', '');
+    $wikiLocation = \OCP\Config::GetAppValue(App::APP_NAME, 'wikilocation', '');
     $dokuWikiEmbed = new App($wikiLocation);
     $version = $dokuWikiEmbed->version();
     if ($version === false) {
-        \OCP\Util::writeLog(App::APPNAME,
+        \OCP\Util::writeLog(App::APP_NAME,
                             "DokuWiki refresh failed.",
                             \OC_Log::ERROR);
     } else {
-        \OCP\Util::writeLog(App::APPNAME,
+        \OCP\Util::writeLog(App::APP_NAME,
                             "DokuWiki@".$version." refresh probably succeeded.",
                             \OC_Log::INFO);
     }

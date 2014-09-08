@@ -27,7 +27,7 @@ use DWEMBED\App;
 <div class="section">
   <form id="dwembedsettings">
     <legend>
-      <img class="svg dokuwikilogo" src="<?php echo OCP\Util::imagePath(App::APPNAME, 'dokuwiki-logo.svg'); ?>" >
+      <img class="svg dokuwikilogo" src="<?php echo OCP\Util::imagePath(App::APP_NAME, 'dokuwiki-logo.svg'); ?>" >
       <strong><?php echo L::t('Embedded DokuWiki');?></strong><br />
     </legend>
     <input type="text"

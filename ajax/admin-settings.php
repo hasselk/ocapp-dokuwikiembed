@@ -24,7 +24,7 @@ use DWEMBED\App;
 use DWEMBED\L;
 use DWEMBED\Util;
 
-$appName = App::APPNAME;
+$appName = App::APP_NAME;
 
 OCP\User::checkAdminUser();
 OCP\JSON::callCheck();

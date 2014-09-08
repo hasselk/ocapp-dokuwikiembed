@@ -18,15 +18,19 @@
  * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-var DWEmbed = DWEmbed || {};
+var DWEmbed = DWEmbed || {
+    appName: 'dokuwikiembed',
+    refreshInterval: 300
+};
 
 (function(window, $, DWEmbed) {
+
     // Dummy, maybe more later
-    DWEmbed.appName = 'dokuwikiembed';
-    DWEmbed.refreshInterval = 300000;
+
 })(window, jQuery, DWEmbed);
 
 $(document).ready(function() {
+
     $(window).resize(function() {
         //fillWindow($('#dokuwiki_container'));
     });
