@@ -27,6 +27,21 @@ var DWEmbed = DWEmbed || {
 
     // Dummy, maybe more later
 
+    DWEmbed.loadCallback = function(frame) {
+        frame.contents().find('.logout').remove();
+        frame.contents().find('li:empty').remove();
+        frame.contents().find('form.btn_logout').remove();
+
+        frame.contents().find('a').filter(function() {
+            return this.hostname && this.hostname !== window.location.hostname;
+        }).each(function() {
+            $(this).attr('target','_blank');
+        });
+
+	$('#dokuwikiLoader').fadeOut('slow');
+	frame.slideDown('slow');
+    };
+
 })(window, jQuery, DWEmbed);
 
 $(document).ready(function() {
@@ -37,18 +52,7 @@ $(document).ready(function() {
     $(window).resize();
 
     $('#dokuwikiFrame').load(function(){
-        $('#dokuwikiFrame').contents().find('.logout').remove();
-        $('#dokuwikiFrame').contents().find('li:empty').remove();
-        $('#dokuwikiFrame').contents().find('form.btn_logout').remove();
-
-        $('#dokuwikiFrame').contents().find('a').filter(function() {
-            return this.hostname && this.hostname !== window.location.hostname;
-        }).each(function() {
-            $(this).attr('target','_blank');
-        });
-
-	$('#dokuwikiLoader').fadeOut('slow');
-	$('#dokuwikiFrame').slideDown('slow');
+        DWEmbed.loadCallback($(this));
     });
 
 });
