@@ -42,6 +42,73 @@ var DWEmbed = DWEmbed || {
 	frame.slideDown('slow');
     };
 
+    /**Show the given wiki-page in a jQuery dialog popup. The page
+     *name is sent to an Ajax callback which generates a suitable
+     *iframe which then finally holds the wiki contents.
+     *
+     * @param wikiPage The DokuWiki page name.
+     */
+    DWEmbed.wikiPopup = function(wikiPage) {
+
+	
+	$.post(OC.filePath('cafevdb', 'ajax', 'dokuwikiframe.php'),
+	       {
+		   wikiPage: wikiPage
+	       }
+               function (data) {
+		   var containerId  = 'dokuwiki_popup';
+		   var containerSel = '#'+containerId;
+		   var container;
+             if (data.status == 'success') {
+		 container = $('<div id="'+containerId+'"></div>');
+		 container.html(data.data.contents);
+                 $('body').append(container);
+		 container = $(containerSel);
+             } else {
+               var info = '';
+		 if (typeof data.data.message != 'undefined') {
+	             info = data.data.message;
+		 } else {
+	             info = t('dokuwikiembed', 'Unknown error :(');
+		 }
+		 if (typeof data.data.error != 'undefined' && data.data.error == 'exception') {
+	             info += '<p><pre>'+data.data.exception+'</pre>';
+	             info += '<p><pre>'+data.data.trace+'</pre>';
+		 }
+		 OC.dialogs.alert(info, t('dokluwikiembed', 'Error'));
+		 if (data.data.debug != '') {
+                     OC.dialogs.alert(data.data.debug, t('dokuwikiembed', 'Debug Information'), null, true);
+		 }
+		 return false;
+             }
+             var popup = container.dialog({
+               title: data.data.title,
+               position: { my: "middle top+5%",
+                           at: "middle bottom",
+                           of: "#controls" },
+               width: 'auto',
+               height: 'auto',
+               modal: true,
+               closeOnEscape: false,
+               dialogClass: 'dokuwiki-page-popup',
+               resizable: false,
+               open: function() {
+
+                 var dialogHolder = $(this);
+                 var dialogWidget = dialogHolder.dialog('widget');
+               },
+               close: function() {
+                 $('.tipsy').remove();
+                 var dialogHolder = $(this);
+
+                 dialogHolder.dialog('close');
+                 dialogHolder.dialog('destroy').remove();
+               },
+             });
+               });
+	return true;
+    };
+
 })(window, jQuery, DWEmbed);
 
 $(document).ready(function() {
