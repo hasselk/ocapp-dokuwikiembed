@@ -85,6 +85,12 @@ OCP\Util::connectHook('\OCP\Config', 'js', 'DWEMBED\Config', 'jsLoadHook');
 
 OCP\App::registerAdmin($appName, 'admin-settings');
 
+// Load our style
+OCP\Util::addStyle($appName, $appName);
+
+// add needed JS
+OCP\Util::addScript($appName, $appName);
+
 // Add global JS routines; this one triggers a session refresh for DW.
 OCP\Util::addScript($appName, 'routes');
 

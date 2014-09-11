@@ -29,21 +29,17 @@ $appName = App::APP_NAME;
 OCP\JSON::callCheck();
 OCP\App::checkAppEnabled($appName);
 
-if(!OCP\User::isLoggedIn()) {
+if (!OCP\User::isLoggedIn()) {
 	die('<script type="text/javascript">document.location = oc_webroot;</script>');
 }
 
+$debugText = "";
+
 try {
-
-// Load our style
-// OCP\Util::addStyle($appName, $appName);
-
-// add needed JS
-// OCP\Util::addScript($appName, $appName);
 
   $wikiLocation = OCP\Config::GetAppValue($appName, 'wikilocation', '');
 
-  $tmpl = new OCP\Template($appName, "wiki", "user");
+  $tmpl = new OCP\Template($appName, "wiki");
 
   $dokuWikiEmbed = new App($wikiLocation);
   $wikiURL  = $dokuWikiEmbed->wikiURL();
@@ -65,6 +61,7 @@ try {
   return true;
 
 } catch (\Exception $e) {
+
   OCP\JSON::error(
     array(
       'data' => array(

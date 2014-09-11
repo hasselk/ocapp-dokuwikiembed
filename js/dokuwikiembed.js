@@ -51,10 +51,10 @@ var DWEmbed = DWEmbed || {
     DWEmbed.wikiPopup = function(wikiPage) {
 
 	
-	$.post(OC.filePath('cafevdb', 'ajax', 'dokuwikiframe.php'),
+	$.post(OC.filePath('dokuwikiembed', 'ajax', 'dokuwikiframe.php'),
 	       {
 		   wikiPage: wikiPage
-	       }
+	       },
                function (data) {
 		   var containerId  = 'dokuwiki_popup';
 		   var containerSel = '#'+containerId;
@@ -91,11 +91,16 @@ var DWEmbed = DWEmbed || {
                modal: true,
                closeOnEscape: false,
                dialogClass: 'dokuwiki-page-popup',
+               resize: 'auto',
                resizable: false,
                open: function() {
 
                  var dialogHolder = $(this);
                  var dialogWidget = dialogHolder.dialog('widget');
+
+                   $('#dokuwikiFrame').load(function(){
+                       DWEmbed.loadCallback($(this));
+                   });
                },
                close: function() {
                  $('.tipsy').remove();
@@ -113,13 +118,17 @@ var DWEmbed = DWEmbed || {
 
 $(document).ready(function() {
 
-    $(window).resize(function() {
-        //fillWindow($('#dokuwiki_container'));
-    });
-    $(window).resize();
+    var wikiFrame = $('#dokuwikiFrame');
 
-    $('#dokuwikiFrame').load(function(){
-        DWEmbed.loadCallback($(this));
-    });
+    if (wikiFrame.length > 0) {
+        $(window).resize(function() {
+            //fillWindow($('#dokuwiki_container'));
+        });
+        $(window).resize();
+        
+        $('#dokuwikiFrame').load(function(){
+            DWEmbed.loadCallback($(this));
+        });
+    }
 
 });
