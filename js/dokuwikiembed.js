@@ -99,8 +99,12 @@ var DWEmbed = DWEmbed || {
 
                    $('#dokuwikiFrame').load(function(){
                      DWEmbed.loadCallback($(this));
-		     dialogHolder.dialog('option', 'height', 'auto');
-		     dialogHolder.dialog('option', 'width', 'auto');
+                     this.style.width = 
+                       this.contentWindow.document.body.scrollWidth+20 + 'px';
+                     this.style.height = 
+                       this.contentWindow.document.body.scrollHeight + 'px';
+		     //dialogHolder.dialog('option', 'height', 'auto');
+		     //dialogHolder.dialog('option', 'width', 'auto');
                    });
                },
                close: function() {
