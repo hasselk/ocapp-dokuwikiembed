@@ -37,28 +37,33 @@ $debugText = "";
 
 try {
 
-  $wikiLocation = OCP\Config::GetAppValue($appName, 'wikilocation', '');
+  $debugText = print_r($_POST, true);
 
-  $tmpl = new OCP\Template($appName, "wiki");
+  $wikiLocation = OCP\Config::GetAppValue($appName, 'wikilocation', '');
 
   $dokuWikiEmbed = new App($wikiLocation);
   $wikiURL  = $dokuWikiEmbed->wikiURL();
 
-  $wikiPath = Util::cgiValue('wikiPath', '');
-  $cssClass = Util::cgiValue('cssClass', 'dokuwiki-popup');
+  $wikiPage   = Util::cgiValue('wikiPage', '');
+  $popupTitle = Util::cgiValue('popupTitle', '');
+  $cssClass   = Util::cgiValue('cssClass', 'popup');
 
   $dokuWikiEmbed->emitAuthHeaders();
+
+  $tmpl = new OCP\Template($appName, "wiki");
 
   $tmpl->assign('app', $appName);
   $tmpl->assign('wikilocation', $wikiLocation);
   $tmpl->assign('wikiURL', $wikiURL);
-  $tmpl->assign('wikiPath', $wikiPath);
+  $tmpl->assign('wikiPath', '/doku.php?id='.$wikiPage);
   $tmpl->assign('cssClass', $cssClass);
+  $tmpl->assign('debug', $debugText);
 
   $html = $tmpl->fetchPage();
 
   OCP\JSON::success(
     array('data' => array('contents' => $html,
+                          'title' => $popupTitle,
                           'debug' => $debugText)));
 
   return true;
@@ -69,6 +74,7 @@ try {
     array(
       'data' => array(
         'error' => 'exception',
+        'debugText' => $debugText,
         'exception' => $e->getMessage(),
         'trace' => $e->getTraceAsString(),
         'message' => L::t('Error, caught an exception'))));

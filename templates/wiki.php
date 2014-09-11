@@ -26,7 +26,10 @@ $cssClass = 'dokuwiki-'.(isset($_['cssClass']) ? $_['cssClass'] : 'fullscreen');
 
 <div id="dokuwiki_container" class="<?php echo $cssClass; ?>">
 
-<!-- <pre> <?php echo $_['wikiURL']; ?> </pre> -->
+<!-- <?php echo $_['wikiURL']; ?>  -->
+<!-- <?php echo $_['wikiPath']; ?>  -->
+<!-- <?php echo $_['debug']; ?>  -->
+<!-- <?php print_r($_); ?> -->
 
   <img src="<?php echo \OCP\Util::imagePath($_['app'], 'loader.gif'); ?>" id="dokuwikiLoader" class="<?php echo $cssClass; ?>">
   <iframe style="display:none;overflow:auto"
