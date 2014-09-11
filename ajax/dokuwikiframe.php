@@ -43,7 +43,9 @@ try {
 
   $dokuWikiEmbed = new App($wikiLocation);
   $wikiURL  = $dokuWikiEmbed->wikiURL();
+
   $wikiPath = Util::cgiValue('wikiPath', '');
+  $cssClass = Util::cgiValue('cssClass', 'dokuwiki-popup');
 
   $dokuWikiEmbed->emitAuthHeaders();
 
@@ -51,6 +53,7 @@ try {
   $tmpl->assign('wikilocation', $wikiLocation);
   $tmpl->assign('wikiURL', $wikiURL);
   $tmpl->assign('wikiPath', $wikiPath);
+  $tmpl->assign('cssClass', $cssClass);
 
   $html = $tmpl->fetchPage();
 

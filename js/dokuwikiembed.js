@@ -94,12 +94,13 @@ var DWEmbed = DWEmbed || {
                resize: 'auto',
                resizable: false,
                open: function() {
-
                  var dialogHolder = $(this);
                  var dialogWidget = dialogHolder.dialog('widget');
 
                    $('#dokuwikiFrame').load(function(){
-                       DWEmbed.loadCallback($(this));
+                     DWEmbed.loadCallback($(this));
+		     dialogHolder.dialog('option', 'height', 'auto');
+		     dialogHolder.dialog('option', 'width', 'auto');
                    });
                },
                close: function() {

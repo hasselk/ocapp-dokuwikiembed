@@ -20,21 +20,22 @@
  * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+$cssClass = 'dokuwiki-'.(isset($_['cssClass']) ? $_['cssClass'] : 'fullscreen');
+
 ?>
 
-<div id="dokuwiki_container">
+<div id="dokuwiki_container" class="<?php echo $cssClass; ?>">
 
-<!-- <pre>
-<?php echo $_['wikiURL']?>
-</pre> -->
+<!-- <pre> <?php echo $_['wikiURL']; ?> </pre> -->
 
-<img src="<?php echo \OCP\Util::imagePath($_['app'], 'loader.gif'); ?>" id="dokuwikiLoader">
-<iframe style="display:none;overflow:auto"
-        src="<?php echo $_['wikiURL'].$_['wikiPath'];?>"
-        id="dokuwikiFrame"
-        name="dokuwikiembed"
-        width="100%">
-</iframe>
+  <img src="<?php echo \OCP\Util::imagePath($_['app'], 'loader.gif'); ?>" id="dokuwikiLoader" class="<?php echo $cssClass; ?>">
+  <iframe style="display:none;overflow:auto"
+          class="<?php echo $cssClass; ?>"
+          src="<?php echo $_['wikiURL'].$_['wikiPath'];?>"
+          id="dokuwikiFrame"
+          name="dokuwikiembed"
+          width="100%">
+  </iframe>
 
 </div>
 
