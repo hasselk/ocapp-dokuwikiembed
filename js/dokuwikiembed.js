@@ -92,7 +92,7 @@ var DWEmbed = DWEmbed || {
                closeOnEscape: false,
                dialogClass: 'dokuwiki-page-popup',
                resize: 'auto',
-               resizable: false,
+               resizable: true,
                open: function() {
                  var dialogHolder = $(this);
                  var dialogWidget = dialogHolder.dialog('widget');
