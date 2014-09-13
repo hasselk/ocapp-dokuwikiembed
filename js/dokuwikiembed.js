@@ -75,6 +75,8 @@ var DWEmbed = DWEmbed || {
     contents.find('.logout').remove();
     contents.find('li:empty').remove();
     contents.find('form.btn_logout').remove();
+    contents.find('#dokuwiki__usertools li.user').remove();
+    contents.find('#dokuwiki__usertools a.action.profile').remove();
 
     // Make sure all external links are opened in another window
     contents.find('a').filter(function() {
@@ -170,6 +172,12 @@ var DWEmbed = DWEmbed || {
 
                  frame.load(function(){
                    var self = this;
+                   var contents = $(self).contents();
+
+                   // Remove some more stuff. The popup is meant for a
+                   // single page.
+                   contents.find('#dokuwiki__header div.pad').remove();
+                   contents.find('#dokuwiki__header').css('padding', '2.5em 0px 0px');
 
                    // <HACK REASON="determine the height of the iframe contents">
                    dialogHolder.height('');
@@ -191,7 +199,7 @@ var DWEmbed = DWEmbed || {
 
                      // Unfortunately, there is no resize event on
                      // textareas. We simulate one
-                     var editArea = frame.contents().find('textarea');
+                     var editArea = contents.find('textarea');
                      if (editArea.length > 0) {
                        DWEmbed.textareaResize(editArea);
 
