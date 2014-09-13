@@ -46,7 +46,9 @@ try {
 
   $wikiPage   = Util::cgiValue('wikiPage', '');
   $popupTitle = Util::cgiValue('popupTitle', '');
-  $cssClass   = Util::cgiValue('cssClass', 'popup');
+  $cssClass   = Util::cgiValue('cssClass', 'dokuwiki-popup');
+  $attributes = Util::cgiValue('iframeAttributes', '');
+  
 
   $dokuWikiEmbed->emitAuthHeaders();
 
@@ -57,6 +59,7 @@ try {
   $tmpl->assign('wikiURL', $wikiURL);
   $tmpl->assign('wikiPath', '/doku.php?id='.$wikiPage);
   $tmpl->assign('cssClass', $cssClass);
+  $tmpl->assign('iframeAttributes', $attributes);
   $tmpl->assign('debug', $debugText);
 
   $html = $tmpl->fetchPage();

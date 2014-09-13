@@ -25,21 +25,88 @@ var DWEmbed = DWEmbed || {
 
 (function(window, $, DWEmbed) {
 
-  // Dummy, maybe more later
+  /**Unfortunately, the textare element does not fire a resize
+   * event. This function emulates one.
+   *
+   * @param textarea jQuery descriptor for the textarea element
+   *
+   * @param delay Optional, defaults to 50. If true, fire the event
+   * immediately, if set, then this is a delay in ms.
+   * 
+   *
+   */
+  DWEmbed.textareaResize = function(textarea, delay) {
+    if (typeof delay == 'undefined') {
+      delay = 50; // ms
+    }
+    textarea.off('mouseup mousemove');
+    textarea.on('mouseup mousemove', function() {
+      if (this.oldwidth  === null) {
+        this.oldwidth  = this.style.width;
+      }
+      if (this.oldheight === null) {
+        this.oldheight = this.style.height;
+      }
+      if (this.style.width != this.oldwidth || this.style.height != this.oldheight) {
+        var self = this;
+        if (delay > 0) {
+          if (this.resize_timeout) {
+            clearTimeout(this.resize_timeout);
+        }
+          this.resize_timeout = setTimeout(function() {
+            $(self).resize();
+          }, delay);
+        } else {
+          $(this).resize();
+        }
+        this.oldwidth  = this.style.width;
+        this.oldheight = this.style.height;
+      }
+    });
+  };
 
-  DWEmbed.loadCallback = function(frame) {
-    frame.contents().find('.logout').remove();
-    frame.contents().find('li:empty').remove();
-    frame.contents().find('form.btn_logout').remove();
+  /**Called after loading the DokuWiki has been loaded by the
+   * iframe. We make sure that external links are opened in another
+   * tab/window.
+   */
+  DWEmbed.loadCallback = function(frame, frameWrapper, callback) {
+    var contents = frame.contents();
 
-    frame.contents().find('a').filter(function() {
+    contents.find('.logout').remove();
+    contents.find('li:empty').remove();
+    contents.find('form.btn_logout').remove();
+
+    // Make sure all external links are opened in another window
+    contents.find('a').filter(function() {
       return this.hostname && this.hostname !== window.location.hostname;
     }).each(function() {
       $(this).attr('target','_blank');
     });
 
-    $('#dokuwikiLoader').fadeOut('fast');
-    frame.slideDown('fast');
+    // make sure that links in the preview pane are NOT followed.
+    contents.find('div.preview').find('a[class^="wikilink"]').on('click', function() {
+      var wikiPage = $(this).attr('href');
+      wikiPage = wikiPage.replace(/^\/[^?]+\?id=(.*)$/, '$1');
+      OC.dialogs.alert(t('dokluwikiembed', 'Links to wiki-pages are disabled in preview mode.'),
+                       t('dokluwikiembed', 'Link to Wiki-Page') + ' "' + wikiPage + '"');
+      return false;
+    });
+
+    if (typeof callback == 'undefined') {
+      callback = function() {};
+    }
+
+    var loader = $('#dokuwikiLoader');
+    if (frameWrapper.is(':hidden')) {
+      loader.fadeOut('slow', function() {
+        frameWrapper.slideDown('slow', function() {
+          callback(frame, frameWrapper);
+        });
+      });
+    } else {
+      loader.fadeOut('slow');
+      callback(frame, frameWrapper);
+    }
   };
 
   /**Show the given wiki-page in a jQuery dialog popup. The page
@@ -53,17 +120,19 @@ var DWEmbed = DWEmbed || {
     $.post(OC.filePath('dokuwikiembed', 'ajax', 'dokuwikiframe.php'),
 	   {
 	     wikiPage: wikiPage,
-             popupTitle: popupTitle
+             popupTitle: popupTitle,
+             cssClass: 'popup',
+             iframeAttributes: 'scrolling="no"'
 	   },
            function (data) {
 	     var containerId  = 'dokuwiki_popup';
 	     var containerSel = '#'+containerId;
-	     var container;
+	     var dialogHolder;
              if (data.status == 'success') {
-	       container = $('<div id="'+containerId+'"></div>');
-	       container.html(data.data.contents);
-               $('body').append(container);
-	       container = $(containerSel);
+	       dialogHolder = $('<div id="'+containerId+'"></div>');
+	       dialogHolder.html(data.data.contents);
+               $('body').append(dialogHolder);
+	       dialogHolder = $(containerSel);
              } else {
                var info = '';
 	       if (typeof data.data.message != 'undefined') {
@@ -81,13 +150,13 @@ var DWEmbed = DWEmbed || {
 	       }
 	       return false;
              }
-             var popup = container.dialog({
+             var popup = dialogHolder.dialog({
                title: data.data.title,
-               position: { my: "middle top+5%",
-                           at: "middle bottom",
-                           of: "#controls" },
+               position: { my: "middle top",
+                           at: "middle bottom+50px",
+                           of: "#header" },
                width: 'auto',
-               //height: 'auto',
+               height: 'auto',
                modal: true,
                closeOnEscape: false,
                dialogClass: 'dokuwiki-page-popup',
@@ -95,22 +164,49 @@ var DWEmbed = DWEmbed || {
                open: function() {
                  var dialogHolder = $(this);
                  var dialogWidget = dialogHolder.dialog('widget');
+                 var frameWrapper = dialogHolder.find('#dokuwikiFrameWrapper');
+                 var frame        = dialogHolder.find('#dokuwikiFrame');
+                 var titleHeight  = dialogWidget.find('.ui-dialog-titlebar').outerHeight();
 
-                 $('#dokuwikiFrame').load(function(){
-                   DWEmbed.loadCallback($(this));
-                   //this.style.width = 
-                   //this.contentWindow.document.body.scrollWidth+20 + 'px';
-                   this.style.height = 
-                     this.contentWindow.document.body.scrollHeight + 'px';
-                   var newHeight = dialogWidget.height()
-                     - dialogWidget.find('.ui-dialog-titlebar').outerHeight();
-                   //this.style.height = newHeight + 'px';
-                   dialogHolder.height(newHeight);
-                   dialogHolder.find('#docuwiki-container').height(newHeight);
-                   this.height = newHeight + 'px';
-                   //alert(this.contentWindow.document.body.scrollHeight + 'px'+"dialog: "+dialogWidget.height());
-		   //dialogHolder.dialog('option', 'height', 'auto');
-		   //dialogHolder.dialog('option', 'width', 'auto');
+                 frame.load(function(){
+                   var self = this;
+
+                   // <HACK REASON="determine the height of the iframe contents">
+                   dialogHolder.height('');
+
+                   var scrollHeight = self.contentWindow.document.body.scrollHeight;
+                   frame.css({ height: scrollHeight + 'px',
+                               overflow: 'hidden' });
+                   if (frameWrapper.css('height') == '0px') {
+                     frameWrapper.css({ height: 'unset',
+                                        display: 'none' });
+                   }
+                   // </HACK>
+
+                   DWEmbed.loadCallback(frame, frameWrapper, function() {
+		     //dialogHolder.dialog('option', 'height', 'auto');
+		     //dialogHolder.dialog('option', 'width', 'auto');
+                     var newHeight = dialogWidget.height() - titleHeight;
+                     dialogHolder.height(newHeight);
+
+                     // Unfortunately, there is no resize event on
+                     // textareas. We simulate one
+                     var editArea = frame.contents().find('textarea');
+                     if (editArea.length > 0) {
+                       DWEmbed.textareaResize(editArea);
+
+                       editArea.on('resize', function() {
+                         var scrollHeight = self.contentWindow.document.body.scrollHeight;
+                         frame.css({ height: scrollHeight + 'px',
+                                     overflow: 'hidden' });
+                         dialogHolder.dialog('option', 'height', 'auto');
+                         dialogHolder.dialog('option', 'width', 'auto');
+                         var newHeight = dialogWidget.height() - titleHeight;
+                         dialogHolder.height(newHeight);
+                       });
+                     }
+                     
+                   });
                  });
                },
                close: function() {
@@ -130,16 +226,16 @@ var DWEmbed = DWEmbed || {
 $(document).ready(function() {
 
   var wikiFrame = $('#dokuwikiFrame');
+  var frameWrapper = $('#dokuwikiFrameWrapper');
 
   if (wikiFrame.length > 0) {
-    $(window).resize(function() {
-      //fillWindow($('#dokuwiki_container'));
-    });
-    $(window).resize();
-    
     $('#dokuwikiFrame').load(function(){
-      DWEmbed.loadCallback($(this));
+      DWEmbed.loadCallback($(this), $('#dokuwikiFrameWrapper'));
     });
   }
 
 });
+
+// Local Variables: ***
+// js-indent-level: 2 ***
+// End: ***

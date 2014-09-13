@@ -20,7 +20,20 @@
  * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+// additional CSS class
 $cssClass = 'dokuwiki-'.(isset($_['cssClass']) ? $_['cssClass'] : 'fullscreen');
+
+// additional attributes
+$iframeAttributes = $_['iframeAttributes'];
+
+$cnt = 0;
+$tmp = preg_replace('/class="([^"]*)"/i', '${1} '.$cssClass, $iframeAttributes, -1 , $cnt);
+if ($tmp !== null) {
+  $iframeAttributes = $tmp;
+}
+if ($cnt == 0) {
+  $iframeAttributes .= 'class="'.$cssClass.'"';
+}
 
 ?>
 
@@ -28,17 +41,21 @@ $cssClass = 'dokuwiki-'.(isset($_['cssClass']) ? $_['cssClass'] : 'fullscreen');
 
 <!-- <?php echo $_['wikiURL']; ?>  -->
 <!-- <?php echo $_['wikiPath']; ?>  -->
+<!-- <?php echo $_['cssClass']; ?>  -->
+<!-- <?php echo $_['iframeAttributes']; ?>  -->
 <!-- <?php echo $_['debug']; ?>  -->
 <!-- <?php print_r($_); ?> -->
 
   <img src="<?php echo \OCP\Util::imagePath($_['app'], 'loader.gif'); ?>" id="dokuwikiLoader" class="<?php echo $cssClass; ?>">
-  <iframe style="display:none;overflow:auto"
-          class="<?php echo $cssClass; ?>"
-          src="<?php echo $_['wikiURL'].$_['wikiPath'];?>"
-          id="dokuwikiFrame"
-          name="dokuwikiembed"
-          width="100%">
-  </iframe>
+  <div id="dokuwikiFrameWrapper" class="<?php echo $cssClass; ?>">
+    <iframe style="overflow:auto"
+            src="<?php echo $_['wikiURL'].$_['wikiPath'];?>"
+            id="dokuwikiFrame"
+            name="dokuwikiembed"
+            width="100%"
+            <?php echo $iframeAttributes; ?>>
+    </iframe>
+  </div>
 
 </div>
 
