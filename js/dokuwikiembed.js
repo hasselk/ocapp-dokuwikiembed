@@ -115,14 +115,19 @@ var DWEmbed = DWEmbed || {
    *name is sent to an Ajax callback which generates a suitable
    *iframe which then finally holds the wiki contents.
    *
-   * @param wikiPage The DokuWiki page name.
+   * @param options Object with the following components:
+   * {
+   *   wikiPage: 'page',
+   *   popupTitle: 'title',
+   *   modal: true/false
+   * }
    */
-  DWEmbed.wikiPopup = function(wikiPage, popupTitle) {
+  DWEmbed.wikiPopup = function(options) {
 
     $.post(OC.filePath('dokuwikiembed', 'ajax', 'dokuwikiframe.php'),
 	   {
-	     wikiPage: wikiPage,
-             popupTitle: popupTitle,
+	     wikiPage: options.wikiPage,
+             popupTitle: options.popupTitle,
              cssClass: 'popup',
              iframeAttributes: 'scrolling="no"'
 	   },
@@ -159,7 +164,7 @@ var DWEmbed = DWEmbed || {
                            of: "#header" },
                width: 'auto',
                height: 'auto',
-               modal: true,
+               modal: options.modal,
                closeOnEscape: false,
                dialogClass: 'dokuwiki-page-popup',
                resizable: false,
