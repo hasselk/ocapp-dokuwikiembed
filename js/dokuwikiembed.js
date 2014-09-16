@@ -121,8 +121,12 @@ var DWEmbed = DWEmbed || {
    *   popupTitle: 'title',
    *   modal: true/false
    * }
+   * 
+   * @param openCallback Optional callback to be call on open. The
+   * callback will get the element holding the dialog content as
+   * argument and the dialog widget itself. The callback is called BEFORE the iframe is loaded.
    */
-  DWEmbed.wikiPopup = function(options) {
+  DWEmbed.wikiPopup = function(options, openCallback) {
 
     $.post(OC.filePath('dokuwikiembed', 'ajax', 'dokuwikiframe.php'),
 	   {
@@ -174,6 +178,10 @@ var DWEmbed = DWEmbed || {
                  var frameWrapper = dialogHolder.find('#dokuwikiFrameWrapper');
                  var frame        = dialogHolder.find('#dokuwikiFrame');
                  var titleHeight  = dialogWidget.find('.ui-dialog-titlebar').outerHeight();
+
+                 if (typeof openCallback == 'function') {
+                   openCallback(dialogHolder, dialogWidget);
+                 }
 
                  frame.load(function(){
                    var self = this;
@@ -228,8 +236,10 @@ var DWEmbed = DWEmbed || {
 
                  dialogHolder.dialog('close');
                  dialogHolder.dialog('destroy').remove();
-               },
+                 return false;
+               }
              });
+             return false;
            });
     return true;
   };
