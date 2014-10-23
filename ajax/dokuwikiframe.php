@@ -46,7 +46,7 @@ try {
 
   $wikiPage   = Util::cgiValue('wikiPage', '');
   $popupTitle = Util::cgiValue('popupTitle', '');
-  $cssClass   = Util::cgiValue('cssClass', 'dokuwiki-popup');
+  $cssClass   = Util::cgiValue('cssClass', 'popup');
   $attributes = Util::cgiValue('iframeAttributes', '');
   
 

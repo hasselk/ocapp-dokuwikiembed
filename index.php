@@ -58,6 +58,9 @@ $tmpl->assign('app', $appName);
 $tmpl->assign('wikilocation', $wikiLocation);
 $tmpl->assign('wikiURL', $wikiURL);
 $tmpl->assign('wikiPath', $wikiPath);
+$tmpl->assign('cssClass', 'fullscreen');
+$tmpl->assign('iframeAttributes', '');
+$tmpl->assign('debug', '');
 
 $tmpl->printpage();
 
