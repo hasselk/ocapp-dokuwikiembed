@@ -207,15 +207,85 @@ class App
   function getPage($pagename)
   {
     return $this->xmlRequest("wiki.getPage", array($pagename));
-  }  
+  }
 
+  /**
+   * Parse a cookie header in order to obtain name, date of
+   * expiry and path.
+   *
+   * @parm cookieHeader Guess what
+   *
+   * @return Array with name, value, expires and path fields, or
+   * false if $cookie was not a Set-Cookie header.
+   *
+   */
+  static private function parseCookie($cookieHeader)
+  {
+    if (preg_match('/^Set-Cookie:\s*([^=]+)=([^;]+)(;|$)(\s*(expires)=([^;]+)(;|$))?(\s*(path)=([^;]+)(;|$))?/i', $cookieHeader, $match)) {
+      print_r($match);
+      array_shift($match); // get rid of matched string
+      $name = array_shift($match);
+      $value = array_shift($match);
+      $path = false;
+      $stamp = false;
+      while (count($match) > 0) {
+        $token = array_shift($match);
+        switch ($token) {
+        case 'expires':
+          $stamp = array_shift($match);
+          break;
+        case 'path':
+          $path = array_shift($match);
+        }
+      }
+      return array('name' => $name,
+                   'value' => $value,
+                   'expires' => $stamp,
+                   'path' => $path);
+    }
+    return false;
+  }
+        
+  /**
+   * Normally, we do NOT want to replace cookies, we need two
+   * paths: one for the RC directory, one for the OC directory
+   * path. However: NGINX (a web-server software) on some
+   * systems has a header limit of 4k, which is not much. At
+   * least, if one tries to embed several web-applications into
+   * RC by the same techniques which are executed here.
+   *
+   * This function tries to reduce the header size by replacing
+   * cookies with the same name and path, but adding a new
+   * cookie if name or path differs.
+   *
+   * @param cookieHeader The raw header holding the cookie.
+   */
+  static private function addCookie($cookieHeader)
+  {
+    $thisCookie = self::parseCookie($cookieHeader);
+    $found = false;
+    foreach(headers_list() as $header) {
+      $cookie = self::parseCookie($header);
+      if ($cookie !== false) {
+        if ($cookie['name'] == $thisCookie['name'] &&
+            $cookie['value'] == $thisCookie['value'] &&
+            $cookie['expires'] == $thisCookie['expires'] &&
+            $cookie['path'] == $thisCookie['path']) {
+          $found = true;
+        }
+      }
+    }
+    if (!$found) {
+      header($cookieHeader, false);
+    }
+  }     
 
   /**Send authentication headers previously aquired
    */
   function emitAuthHeaders() 
   {
     foreach ($this->authHeaders as $header) {
-      header($header, false /* replace or not??? */);
+      self::addCookie();
     }
   }
 };
