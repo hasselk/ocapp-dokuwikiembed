@@ -284,7 +284,8 @@ class App
   function emitAuthHeaders() 
   {
     foreach ($this->authHeaders as $header) {
-      self::addCookie();
+      //header($header, false);
+      self::addCookie($header);
     }
   }
 };
