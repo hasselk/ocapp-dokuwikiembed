@@ -274,7 +274,7 @@ class App
         }
       }
     }
-    if (!$found) {
+    if (!$found && $thisCookie['value'] != 'deleted') {
       header($cookieHeader, false);
     }
   }     
