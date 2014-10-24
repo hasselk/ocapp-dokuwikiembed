@@ -257,8 +257,8 @@ $(document).ready(function() {
   var frameWrapper = $('#dokuwikiFrameWrapper');
 
   if (wikiFrame.length > 0) {
-    $('#dokuwikiFrame').load(function(){
-      DWEmbed.loadCallback($(this), $('#dokuwikiFrameWrapper'));
+    wikiFrame.load(function(){
+      DWEmbed.loadCallback($(this), frameWrapper);
     });
   }
 
