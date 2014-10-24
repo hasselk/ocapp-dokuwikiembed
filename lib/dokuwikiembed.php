@@ -222,7 +222,6 @@ class App
   static private function parseCookie($cookieHeader)
   {
     if (preg_match('/^Set-Cookie:\s*([^=]+)=([^;]+)(;|$)(\s*(expires)=([^;]+)(;|$))?(\s*(path)=([^;]+)(;|$))?/i', $cookieHeader, $match)) {
-      print_r($match);
       array_shift($match); // get rid of matched string
       $name = array_shift($match);
       $value = array_shift($match);
