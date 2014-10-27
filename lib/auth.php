@@ -34,6 +34,13 @@ class AuthHooks
     if (defined('DOKU_INC')) {
       return;
     }
+    $via = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '';
+    if (preg_match('#(/ocs/v1.php|'.
+                   '/apps/calendar/caldav.php|'.
+                   '/apps/contacts/carddav.php|'.
+                   '/remote.php/webdav)/#', $via)) {
+      return;
+    }
 
     $wikiLocation = \OCP\Config::GetAppValue(App::APP_NAME, 'wikilocation', '');
 
@@ -56,6 +63,13 @@ class AuthHooks
   public static function logout()
   {
     if (defined('DOKU_INC')) {
+      return;
+    }
+    $via = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '';
+    if (preg_match('#(/ocs/v1.php|'.
+                   '/apps/calendar/caldav.php|'.
+                   '/apps/contacts/carddav.php|'.
+                   '/remote.php/webdav)/#', $via)) {
       return;
     }
 
