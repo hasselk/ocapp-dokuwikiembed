@@ -254,6 +254,7 @@ var DWEmbed = DWEmbed || {
 $(document).ready(function() {
 
   var wikiFrame = $('#dokuwikiFrame');
+  var dokuwiki = wikiFrame.contents();
   var frameWrapper = $('#dokuwikiFrameWrapper');
 
   if (wikiFrame.length > 0) {
@@ -261,7 +262,9 @@ $(document).ready(function() {
       DWEmbed.loadCallback($(this), frameWrapper);
     });
   }
-
+  if (dokuwiki.find('.logout')) {
+    DWEmbed.loadCallback(wikiFrame, frameWrapper);
+  }
 });
 
 // Local Variables: ***
