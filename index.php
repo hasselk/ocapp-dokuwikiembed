@@ -50,7 +50,8 @@ $tmpl = new OCP\Template($appName, "wiki", "user");
 
 $dokuWikiEmbed = new App($wikiLocation);
 $wikiURL  = $dokuWikiEmbed->wikiURL();
-$wikiPath = Util::cgiValue('wikiPath', '');
+$wikiPath = Util::cgiValue('wikiPage', '');
+$wikiPath = '/doku.php?id='.$wikiPath;
 
 $dokuWikiEmbed->emitAuthHeaders();
 
