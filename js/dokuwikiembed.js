@@ -253,18 +253,30 @@ var DWEmbed = DWEmbed || {
 
 $(document).ready(function() {
 
+  var wikiContainer = $('#dokuwiki_container');
   var wikiFrame = $('#dokuwikiFrame');
   var dokuwiki = wikiFrame.contents();
   var frameWrapper = $('#dokuwikiFrameWrapper');
 
+  var setHeightCallback = function() {
+    wikiContainer.height($('#content').height());
+  };
+
   if (wikiFrame.length > 0) {
     wikiFrame.load(function(){
-      DWEmbed.loadCallback($(this), frameWrapper);
+      DWEmbed.loadCallback($(this), frameWrapper, setHeightCallback);
+    });
+    var resizeTimer;
+    $(window).resize(function()  {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(setHeightCallback);
     });
   }
   if (dokuwiki.find('.logout')) {
-    DWEmbed.loadCallback(wikiFrame, frameWrapper);
+    DWEmbed.loadCallback(wikiFrame, frameWrapper, setHeightCallback);
   }
+
+  
 });
 
 // Local Variables: ***
