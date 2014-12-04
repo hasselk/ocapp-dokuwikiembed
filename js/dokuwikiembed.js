@@ -266,6 +266,7 @@ $(document).ready(function() {
     wikiFrame.load(function(){
       DWEmbed.loadCallback($(this), frameWrapper, setHeightCallback);
     });
+
     var resizeTimer;
     $(window).resize(function()  {
       clearTimeout(resizeTimer);
