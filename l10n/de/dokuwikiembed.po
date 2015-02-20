@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dokuwikiembded\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-07-30 09:02+0200\n"
-"PO-Revision-Date: 2014-07-30 09:03+0200\n"
+"POT-Creation-Date: 2015-02-20 22:53+0100\n"
+"PO-Revision-Date: 2015-02-20 22:53+0100\n"
 "Last-Translator: Claus-Justus Heine <himself@claus-justus-heine.de>\n"
 "Language-Team: German\n"
 "Language: de\n"
@@ -16,39 +16,77 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ajax/admin-settings.php:40
+#: ajax/admin-settings.php:36
 msgid "Got an empty wiki location."
 msgstr "Wiki-Pfad fehlt."
 
-#: ajax/admin-settings.php:42
+#: ajax/admin-settings.php:38
 #, php-format
 msgid "Setting wiki location to `%s' but the location seems to be invalid."
 msgstr ""
 "Wiki-Location ist jetzt `%s', aber dort scheint kein Wiki installiert zu "
 "sein."
 
-#: ajax/admin-settings.php:45
+#: ajax/admin-settings.php:42
 #, php-format
 msgid "Setting wiki location to `%s'."
 msgstr "Wiki-Location ist jetzt `%s'."
 
 #: ajax/admin-settings.php:54
+msgid "Got an empty refresh value."
+msgstr "Leerer Wert für das Auffrischungsintervall."
+
+#: ajax/admin-settings.php:56
+#, php-format
+msgid "This does not appear to be a number: `%s'"
+msgstr "Das scheint aber gar keine Zahl zu sein: `%s'"
+
+#: ajax/admin-settings.php:58
+#, php-format
+msgid "Setting DokuWiki session refresh to %s seconds."
+msgstr "Das Auffrischungsintervall wurde zu %s Sekunden eingestellt."
+
+#: ajax/admin-settings.php:68
 msgid "Unknown request."
 msgstr "Unbekannte Anfrage."
 
-#: appinfo/app.php:96
+#: ajax/dokuwikiframe.php:83
+msgid "Error, caught an exception"
+msgstr "Fehler, PHP-Ausnahme `gefangen'"
+
+#: appinfo/app.php:102
 msgid "DokuWiki"
 msgstr "DokuWiki"
+
+#: js/dokuwikiembed.js:92
+msgid "Links to wiki-pages are disabled in preview mode."
+msgstr "Verweise auf Wiki-Seiten sind im Vorschau-Modues inaktiv."
+
+#: js/dokuwikiembed.js:93
+msgid "Link to Wiki-Page"
+msgstr "Verweis auf eine Wiki-Seite"
+
+#: js/dokuwikiembed.js:152
+msgid "Unknown error :("
+msgstr "Unbekannter Fehler :("
+
+#: js/dokuwikiembed.js:158
+msgid "Error"
+msgstr "Fehler"
+
+#: js/dokuwikiembed.js:160
+msgid "Debug Information"
+msgstr "Informationen zur Fehlersuche"
 
 #: templates/admin-settings.php:31
 msgid "Embedded DokuWiki"
 msgstr "Eingebettetes DokuWiki"
 
-#: templates/admin-settings.php:35
+#: templates/admin-settings.php:37
 msgid "Location"
 msgstr "Location"
 
-#: templates/admin-settings.php:36
+#: templates/admin-settings.php:38
 msgid ""
 "Please enter the location of the already installed DokuWiki\n"
 "instance. This should either be an abolute path relative to the\n"
@@ -62,6 +100,25 @@ msgstr ""
 "der DokuWiki-Installation. Sie müssen im DokuWiki das\n"
 "XMLRPC-Protokoll aktivieren"
 
-#: templates/admin-settings.php:42
+#: templates/admin-settings.php:44
 msgid "DokuWiki Location"
 msgstr "Dokuwiki Location"
+
+#: templates/admin-settings.php:50
+msgid "Refresh Time [s]"
+msgstr "Auffrischungsintervall [s]"
+
+#: templates/admin-settings.php:51
+msgid ""
+"Please enter the desired session-refresh interval here. The interval is "
+"measured in seconds and should be somewhat smaller than the configured "
+"session life-time for the DokuWiki instance in use."
+msgstr ""
+"Bitte ein passendes Auffrischungsintervall angeben. Das Intervall wird\n"
+"in Sekunden angegeben und sollte um Einiges kleiner sein als die\n"
+"Lebensdauer der PHP-Session der DokuWiki-Instanz, die eingebettet\n"
+"werden soll."
+
+#: templates/admin-settings.php:53
+msgid "DokuWiki Session Refresh Interval [s]"
+msgstr "DokuWiki Session Auffrischungsintervall [s]"

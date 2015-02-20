@@ -47,7 +47,7 @@ have to enable the XMLRPC protocol in your DokuWiki.'); ?>"
            name="DW_RefreshInterval"
            id="DW_RefreshInterval"
            value="<?php echo $_['wikiRefreshInterval']; ?>"
-           placeholder="<?php echo L::t('RefreshTime [s]'); ?>"
+           placeholder="<?php echo L::t('Refresh Time [s]'); ?>"
            title="<?php echo L::t('Please enter the desired session-refresh interval here. The interval is measured in seconds and should be somewhat smaller than the configured session life-time for the DokuWiki instance in use.'); ?>"
     />
     <label for="DW_RefreshInterval"><?php echo L::t('DokuWiki Session Refresh Interval [s]'); ?></label>
