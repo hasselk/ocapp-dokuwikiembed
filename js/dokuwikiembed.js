@@ -94,6 +94,14 @@ var DWEmbed = DWEmbed || {
       return false;
     });
 
+    contents.find('div.preview').find('a[class^="media"]').on('click', function() {
+      var mediaPage = $(this).attr('href');
+      mediaPage = mediaPage.replace(/^\/[^?]+\?id=(.*)$/, '$1');
+      OC.dialogs.alert(t('dokluwikiembed', 'Links to media-files are disabled in preview mode.'),
+                       t('dokluwikiembed', 'Link to Media') + ' "' + mediaPage + '"');
+      return false;
+    });
+
     if (typeof callback == 'undefined') {
       callback = function() {};
     }
