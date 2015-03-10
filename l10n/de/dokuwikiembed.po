@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dokuwikiembded\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-02-20 22:53+0100\n"
-"PO-Revision-Date: 2015-02-20 22:53+0100\n"
+"POT-Creation-Date: 2015-03-10 16:27+0100\n"
+"PO-Revision-Date: 2015-03-10 16:28+0100\n"
 "Last-Translator: Claus-Justus Heine <himself@claus-justus-heine.de>\n"
 "Language-Team: German\n"
 "Language: de\n"
@@ -67,15 +67,23 @@ msgstr "Verweise auf Wiki-Seiten sind im Vorschau-Modues inaktiv."
 msgid "Link to Wiki-Page"
 msgstr "Verweis auf eine Wiki-Seite"
 
-#: js/dokuwikiembed.js:152
+#: js/dokuwikiembed.js:100
+msgid "Links to media-files are disabled in preview mode."
+msgstr "Verweise auf Medien-Dateien sind im Vorschau-Modues inaktiv."
+
+#: js/dokuwikiembed.js:101
+msgid "Link to Media"
+msgstr "Verweis auf eine Medien-Datei"
+
+#: js/dokuwikiembed.js:160
 msgid "Unknown error :("
 msgstr "Unbekannter Fehler :("
 
-#: js/dokuwikiembed.js:158
+#: js/dokuwikiembed.js:166
 msgid "Error"
 msgstr "Fehler"
 
-#: js/dokuwikiembed.js:160
+#: js/dokuwikiembed.js:168
 msgid "Debug Information"
 msgstr "Informationen zur Fehlersuche"
 
