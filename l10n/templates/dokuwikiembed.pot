@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-07-30 09:03+0200\n"
+"POT-Creation-Date: 2015-03-10 15:29+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,37 +17,83 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ajax/admin-settings.php:40
+#: ajax/admin-settings.php:36
 msgid "Got an empty wiki location."
 msgstr ""
 
-#: ajax/admin-settings.php:42
+#: ajax/admin-settings.php:38
 #, php-format
 msgid "Setting wiki location to `%s' but the location seems to be invalid."
 msgstr ""
 
-#: ajax/admin-settings.php:45
+#: ajax/admin-settings.php:42
 #, php-format
 msgid "Setting wiki location to `%s'."
 msgstr ""
 
 #: ajax/admin-settings.php:54
+msgid "Got an empty refresh value."
+msgstr ""
+
+#: ajax/admin-settings.php:56
+#, php-format
+msgid "This does not appear to be a number: `%s'"
+msgstr ""
+
+#: ajax/admin-settings.php:58
+#, php-format
+msgid "Setting DokuWiki session refresh to %s seconds."
+msgstr ""
+
+#: ajax/admin-settings.php:68
 msgid "Unknown request."
 msgstr ""
 
-#: appinfo/app.php:96
+#: ajax/dokuwikiframe.php:83
+msgid "Error, caught an exception"
+msgstr ""
+
+#: appinfo/app.php:102
 msgid "DokuWiki"
+msgstr ""
+
+#: js/dokuwikiembed.js:92
+msgid "Links to wiki-pages are disabled in preview mode."
+msgstr ""
+
+#: js/dokuwikiembed.js:93
+msgid "Link to Wiki-Page"
+msgstr ""
+
+#: js/dokuwikiembed.js:100
+msgid "Links to media-files are disabled in preview mode."
+msgstr ""
+
+#: js/dokuwikiembed.js:101
+msgid "Link to Media"
+msgstr ""
+
+#: js/dokuwikiembed.js:160
+msgid "Unknown error :("
+msgstr ""
+
+#: js/dokuwikiembed.js:166
+msgid "Error"
+msgstr ""
+
+#: js/dokuwikiembed.js:168
+msgid "Debug Information"
 msgstr ""
 
 #: templates/admin-settings.php:31
 msgid "Embedded DokuWiki"
 msgstr ""
 
-#: templates/admin-settings.php:35
+#: templates/admin-settings.php:37
 msgid "Location"
 msgstr ""
 
-#: templates/admin-settings.php:36
+#: templates/admin-settings.php:38
 msgid ""
 "Please enter the location of the already installed DokuWiki\n"
 "instance. This should either be an abolute path relative to the\n"
@@ -56,6 +102,21 @@ msgid ""
 "have to enable the XMLRPC protocol in your DokuWiki."
 msgstr ""
 
-#: templates/admin-settings.php:42
+#: templates/admin-settings.php:44
 msgid "DokuWiki Location"
+msgstr ""
+
+#: templates/admin-settings.php:50
+msgid "RefreshTime [s]"
+msgstr ""
+
+#: templates/admin-settings.php:51
+msgid ""
+"Please enter the desired session-refresh interval here. The interval is "
+"measured in seconds and should be somewhat smaller than the configured "
+"session life-time for the DokuWiki instance in use."
+msgstr ""
+
+#: templates/admin-settings.php:53
+msgid "DokuWiki Session Refresh Interval [s]"
 msgstr ""
