@@ -86,7 +86,7 @@ var DWEmbed = DWEmbed || {
     });
 
     // make sure that links in the preview pane are NOT followed.
-    contents.find('div.preview').find('a[class^="wikilink"]').on('click', function() {
+    contents.find('div.preview').find('a[class^="wikilink"]').off('click').on('click', function() {
       var wikiPage = $(this).attr('href');
       wikiPage = wikiPage.replace(/^\/[^?]+\?id=(.*)$/, '$1');
       OC.dialogs.alert(t('dokluwikiembed', 'Links to wiki-pages are disabled in preview mode.'),
@@ -94,7 +94,7 @@ var DWEmbed = DWEmbed || {
       return false;
     });
 
-    contents.find('div.preview').find('a[class^="media"]').on('click', function() {
+    contents.find('div.preview').find('a[class^="media"]').off('click').on('click', function() {
       var mediaPage = $(this).attr('href');
       mediaPage = mediaPage.replace(/^\/[^?]+\?id=(.*)$/, '$1');
       OC.dialogs.alert(t('dokluwikiembed', 'Links to media-files are disabled in preview mode.'),
