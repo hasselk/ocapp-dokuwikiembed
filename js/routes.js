@@ -1,6 +1,6 @@
 /**Embed a DokuWiki instance as app into ownCloud, intentionally with
  * single-sign-on.
- * 
+ *
  * @author Claus-Justus Heine
  * @copyright 2013 Claus-Justus Heine <himself@claus-justus-heine.de>
  *
@@ -20,29 +20,30 @@
 
 var DWEmbed = DWEmbed || {
     appName: 'dokuwikiembed',
-    refreshInterval: 300
+    refreshInterval: 300,
+    refreshTimer: false
 };
 
 (function(window, $, DWEmbed) {
 
     DWEmbed.routes = function() {
-        var self = this;
+        self = this;
         if (OC.currentUser) {
             var url = OC.generateUrl('apps/'+this.appName+'/refresh');
-            this.refresh = function() {
+            this.refresh = function(){
                 if (OC.currentUser) {
-                    $.post(url, {}, function () {
-                        setTimeout(self.refresh, self.refreshInterval*1000);
+                    $.post(url, {}, function() {
+                        self.refreshTimer = setTimeout(self.refresh, self.refreshInterval*1000);
                     });
-                } else {
-                    clearTimeout(this.refresh);
+                } else if (self.refreshTimer !== false) {
+                    clearTimeout(self.refreshTimer);
+                    self.refreshTimer = false;
                 }
             };
-            setTimeout(this.refresh, this.refreshInterval*1000);
-        } else {
-            if (typeof this.refresh != 'undefined') {
-                clearTimeout(this.refresh);
-            }
+            this.refreshTimer = setTimeout(this.refresh, this.refreshInterval*1000);
+        } else if (this.refreshTimer !== false) {
+            clearTimeout(this.refreshTimer);
+            self.refreshTimer = false;
         }
     };
 
@@ -51,4 +52,3 @@ var DWEmbed = DWEmbed || {
 $(document).ready(function() {
     DWEmbed.routes();
 });
-    
