@@ -27,12 +27,12 @@ var DWEmbed = DWEmbed || {
 (function(window, $, DWEmbed) {
 
     DWEmbed.routes = function() {
-        self = this;
+        var self = this;
         if (OC.currentUser) {
             var url = OC.generateUrl('apps/'+this.appName+'/refresh');
             this.refresh = function(){
                 if (OC.currentUser) {
-                    $.post(url, {}, function() {
+                    $.post(url, {}).always(function () {
                         self.refreshTimer = setTimeout(self.refresh, self.refreshInterval*1000);
                     });
                 } else if (self.refreshTimer !== false) {
@@ -52,3 +52,7 @@ var DWEmbed = DWEmbed || {
 $(document).ready(function() {
     DWEmbed.routes();
 });
+
+// Local Variables: ***
+// js3-indent-level: 4 ***
+// End: ***
