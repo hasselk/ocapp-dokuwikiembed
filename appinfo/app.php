@@ -96,8 +96,8 @@ OCP\Util::addScript($appName, 'routes');
 
 OCP\App::addNavigationEntry(array(
 		'id' => $appName, 
-		'order' => 10, 
-		'href' => OCP\Util::linkTo($appName, 'index.php'), 
+		'order' => 10,
+                'href' => OCP\Util::linkToRoute('dokuwikiembed_root'),
 		'icon' => OCP\Util::imagePath($appName, 'dokuwiki-logo-gray.png'),
 		'name' => $l->t('DokuWiki')));
 
