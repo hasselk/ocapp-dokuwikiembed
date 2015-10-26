@@ -109,7 +109,7 @@ class App
     if (is_array($response) && xmlrpc_is_fault($response)) {
       \OCP\Util::writeLog(self::APP_NAME,
                           "Error: xlmrpc: $response[faultString] ($response[faultCode])",
-                          \OC_Log::ERROR);
+                          \OCP\Util::ERROR);
       $this->authHeaders = array(); // nothing
       return false;
     }
@@ -132,7 +132,7 @@ class App
                             "XMLRPC method \"$method\" executed with success. Got cookies ".
                             print_r($this->authHeaders, true).
                             ". Sent cookies ".$httpHeader,
-                            \OC_Log::DEBUG);
+                            \OCP\Util::DEBUG);
         return true;
       } else {
         \OCP\Util::writeLog(self::APP_NAME,
@@ -140,7 +140,7 @@ class App
                             print_r($responseHdr, true).
                             " data: ".$result.
                             " response: ".$response,
-                            \OC_Log::DEBUG);
+                            \OCP\Util::DEBUG);
         return false;
       }
     }

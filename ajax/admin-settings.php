@@ -20,52 +20,54 @@
  * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-use DWEMBED\App;
-use DWEMBED\L;
-use DWEMBED\Util;
+namespace DWEMBED
+{
 
-$appName = App::APP_NAME;
+  $appName = App::APP_NAME;
 
-OCP\User::checkAdminUser();
-OCP\JSON::callCheck();
+  \OCP\User::checkAdminUser();
+  \OCP\JSON::callCheck();
 
-if (isset($_POST['DW_Location'])) {
-  $location = trim($_POST['DW_Location']);
+  if (isset($_POST['DW_Location'])) {
+    $location = trim($_POST['DW_Location']);
 
-  if ($location == '') {
-    $message = L::t("Got an empty wiki location.");  
-  } else if (!Util::URLIsValid($location)) {
-    $message = L::t("Setting wiki location to `%s' but the location seems to be invalid.",
-                    array($location));
-  } else {
-    \OC_AppConfig::setValue($appName, 'wikilocation', $location);
-    $message = L::t("Setting wiki location to `%s'.", array($location));
-  }
+    if ($location == '') {
+      $message = L::t("Got an empty wiki location.");  
+    } else if (!Util::URLIsValid($location)) {
+      $message = L::t("Setting wiki location to `%s' but the location seems to be invalid.",
+                      array($location));
+    } else {
+      \OC::$server->getAppConfig()->setValue($appName, 'wikilocation', $location);
+      $message = L::t("Setting wiki location to `%s'.", array($location));
+    }
   
-  OC_JSON::success(array("data" => array("message" => $message)));
+    \OC_JSON::success(array("data" => array("message" => $message)));
 
-  return true;
-}
-
-if (isset($_POST['DW_RefreshInterval'])) {
-  $refresh = trim($_POST['DW_RefreshInterval']);
-
-  if ($refresh == '') {
-    $message = L::t("Got an empty refresh value.");  
-  } else if (!is_numeric($refresh)) {
-    $message = L::t("This does not appear to be a number: `%s'", array($refresh));
-  } else {
-    $message = L::t("Setting DokuWiki session refresh to %s seconds.", array($refresh));
-    \OC_AppConfig::setValue($appName, 'refreshInterval', intval($refresh));
+    return true;
   }
+
+  if (isset($_POST['DW_RefreshInterval'])) {
+    $refresh = trim($_POST['DW_RefreshInterval']);
+
+    if ($refresh == '') {
+      $message = L::t("Got an empty refresh value.");  
+    } else if (!is_numeric($refresh)) {
+      $message = L::t("This does not appear to be a number: `%s'", array($refresh));
+    } else {
+      $message = L::t("Setting DokuWiki session refresh to %s seconds.", array($refresh));
+      \OC::$server->getAppConfig()->setValue($appName, 'refreshInterval', intval($refresh));
+    }
   
-  OC_JSON::success(array("data" => array("message" => $message)));
+    \OC_JSON::success(array("data" => array("message" => $message)));
 
-  return true;
-}
+    return true;
+  }
 
-OC_JSON::error(
-  array("data" => array("message" => L::t('Unknown request.').print_r($_POST, true))));
+  \OC_JSON::error(
+    array("data" => array("message" => L::t('Unknown request.').print_r($_POST, true))));
 
-return false;
+  return false;
 
+} // namespace
+
+?>

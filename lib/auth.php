@@ -56,7 +56,7 @@ class AuthHooks
                           "DokuWiki login of user ".
                           $username.
                           " probably succeeded.",
-                          \OC_Log::INFO);
+                          \OCP\Util::INFO);
     }
   }
   
@@ -79,7 +79,7 @@ class AuthHooks
       $dokuWikiEmbed->emitAuthHeaders();
       \OCP\Util::writeLog(App::APP_NAME,
                           "DokuWiki logoff probably succeeded.",
-                          \OC_Log::INFO);
+                          \OCP\Util::INFO);
     }
   }
 
@@ -94,11 +94,11 @@ class AuthHooks
     if ($version === false) {
         \OCP\Util::writeLog(App::APP_NAME,
                             "DokuWiki refresh failed.",
-                            \OC_Log::ERROR);
+                            \OCP\Util::ERROR);
     } else {
         \OCP\Util::writeLog(App::APP_NAME,
                             "DokuWiki@".$version." refresh probably succeeded.",
-                            \OC_Log::INFO);
+                            \OCP\Util::INFO);
     }
   }
   

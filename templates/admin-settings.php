@@ -25,11 +25,11 @@ use DWEMBED\App;
 ?>
 
 <div class="section">
+  <h2><?php p(L::t('Embedded DokuWiki')) ?></h2>
+  <!--
+  <img class="svg dokuwikilogo" src="<?php echo OCP\Util::imagePath(App::APP_NAME, 'dokuwiki-logo.svg'); ?>" >
+  -->
   <form id="dwembedsettings">
-    <legend>
-      <img class="svg dokuwikilogo" src="<?php echo OCP\Util::imagePath(App::APP_NAME, 'dokuwiki-logo.svg'); ?>" >
-      <strong><?php echo L::t('Embedded DokuWiki');?></strong><br />
-    </legend>
     <input type="text"
            name="DW_Location"
            id="DW_Location"
@@ -48,7 +48,7 @@ have to enable the XMLRPC protocol in your DokuWiki.'); ?>"
            id="DW_RefreshInterval"
            value="<?php echo $_['wikiRefreshInterval']; ?>"
            placeholder="<?php echo L::t('Refresh Time [s]'); ?>"
-           title="<?php echo L::t('Please enter the desired session-refresh interval here. The interval is measured in seconds and should be somewhat smaller than the configured session life-time for the DokuWiki instance in use.'); ?>"
+           title="<?php echo L::t('Please enter the desired session-refresh interval here. The interval is measured in seconds and should be somewhat smaller than the con3figured session life-time for the DokuWiki instance in use.'); ?>"
     />
     <label for="DW_RefreshInterval"><?php echo L::t('DokuWiki Session Refresh Interval [s]'); ?></label>
     <br/>        
