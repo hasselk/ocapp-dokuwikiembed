@@ -187,6 +187,8 @@ var DWEmbed = DWEmbed || {
                  var frame        = dialogHolder.find('#dokuwikiFrame');
                  var titleHeight  = dialogWidget.find('.ui-dialog-titlebar').outerHeight();
 
+                 dialogWidget.draggable('option', 'containment', '#content');
+
                  if (typeof openCallback == 'function') {
                    openCallback(dialogHolder, dialogWidget);
                  }

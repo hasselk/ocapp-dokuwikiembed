@@ -47,6 +47,7 @@
   max-height:100%;
   overflow: auto;
   padding: 0;
+  box-sizing:border-box;
 }
 
 #dokuwikiFrame {
