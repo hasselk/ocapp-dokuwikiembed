@@ -29,8 +29,8 @@ var DWEmbed = DWEmbed || {
     DWEmbed.routes = function() {
         var self = this;
         if (OC.currentUser) {
-            var url = OC.generateUrl('apps/'+this.appName+'/refresh');
-            this.refresh = function(){
+            var url = OC.generateUrl('apps/'+self.appName+'/refresh');
+            self.refresh = function(){
                 if (OC.currentUser) {
                     $.post(url, {}).always(function () {
                         self.refreshTimer = setTimeout(self.refresh, self.refreshInterval*1000);
@@ -40,9 +40,9 @@ var DWEmbed = DWEmbed || {
                     self.refreshTimer = false;
                 }
             };
-            this.refreshTimer = setTimeout(this.refresh, this.refreshInterval*1000);
-        } else if (this.refreshTimer !== false) {
-            clearTimeout(this.refreshTimer);
+            self.refreshTimer = setTimeout(self.refresh, self.refreshInterval*1000);
+        } else if (self.refreshTimer !== false) {
+            clearTimeout(self.refreshTimer);
             self.refreshTimer = false;
         }
     };
