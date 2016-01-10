@@ -31,9 +31,6 @@ class AuthHooks
 {
   public static function login($params)
   {
-    if (defined('DOKU_INC')) {
-      return;
-    }
     $via = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '';
     if (preg_match('#(/ocs/v1.php|'.
                    '/apps/calendar/caldav.php|'.
@@ -62,9 +59,6 @@ class AuthHooks
   
   public static function logout()
   {
-    if (defined('DOKU_INC')) {
-      return;
-    }
     $via = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '';
     if (preg_match('#(/ocs/v1.php|'.
                    '/apps/calendar/caldav.php|'.
@@ -88,6 +82,13 @@ class AuthHooks
    */
   public static function refresh() 
   {
+    $via = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '';
+    if (preg_match('#(/ocs/v1.php|'.
+                   '/apps/calendar/caldav.php|'.
+                   '/apps/contacts/carddav.php|'.
+                   '/remote.php/webdav)/#', $via)) {
+      return;
+    }
     $wikiLocation = \OCP\Config::GetAppValue(App::APP_NAME, 'wikilocation', '');
     $dokuWikiEmbed = new App($wikiLocation);
     $version = $dokuWikiEmbed->version();
@@ -96,9 +97,10 @@ class AuthHooks
                             "DokuWiki refresh failed.",
                             \OCP\Util::ERROR);
     } else {
-        \OCP\Util::writeLog(App::APP_NAME,
-                            "DokuWiki@".$version." refresh probably succeeded.",
-                            \OCP\Util::INFO);
+      $dokuWikiEmbed->emitAuthHeaders();
+      \OCP\Util::writeLog(App::APP_NAME,
+                          "DokuWiki@".$version." refresh probably succeeded.",
+                          \OCP\Util::INFO);
     }
   }
   
