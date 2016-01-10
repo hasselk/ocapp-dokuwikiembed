@@ -68,6 +68,12 @@
   margin-left: -64px; /* Half the width */
 }
 
+@media only screen and (max-width: 768px) {
+  #dokuwikiLoader {
+    position: fixed !important;
+  }
+}
+
 /* make popups scrollable in smaller viewports */
 .ui-dialog.dokuwiki-page-popup {
   max-height: 90% !important;
