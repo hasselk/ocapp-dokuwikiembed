@@ -3,7 +3,7 @@
 /**Main driver module for this app.
  *
  * @author Claus-Justus Heine
- * @copyright 2013 Claus-Justus Heine <himself@claus-justus-heine.de>
+ * @copyright 2013-2016 Claus-Justus Heine <himself@claus-justus-heine.de>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU GENERAL PUBLIC LICENSE
@@ -27,7 +27,9 @@ namespace DWEMBED
 class App
 {
   const APP_NAME = 'dokuwikiembed';
+  const SESSION_AUTHKEY = 'DokuWiki\\authHeaders';
   const RPCPATH = '/lib/exe/xmlrpc.php';
+  const COOKIE_RE = '(?:KEY_)?(?:DokuWiki|DW)[a-zA-Z0-9]*'; ///< Cookies we want to capture
 
   private $dwProto;
   private $dwHost;
@@ -35,7 +37,7 @@ class App
   private $dwPath;  
 
   private $authHeaders; //!< Authentication headers returned by DokuWiki
-  private $reqHeaders;  //!< Authentication headers, cookies we send to DW
+  private $authCookies; //!< Authentication headers, cookies we send to DW
 
   public function __construct($location)
   {
@@ -48,12 +50,18 @@ class App
     $this->dwPath  = $urlParts['path'];
 
     $this->authHeaders = array();
+    $this->authCookies = array();
 
-    // If we have cookies with AuthData, then store them in authHeaders
-    $this->reqHeaders = array();
-    foreach ($_COOKIE as $cookie => $value) {
-      if (preg_match('/^(DokuWiki|DW).*/', $cookie)) {
-        $this->reqHeaders[] = "$cookie=".urlencode($value);
+    $sessionAuth = \OC::$server->getSession()->get(self::SESSION_AUTHKEY);
+    if (is_array($sessionAuth)) {
+      // cookies to be forwarded by us to the client
+      $this->authHeaders = $sessionAuth;
+      
+      // cookies to be sent by us to DokuWiki
+      $this->authCookies = array();
+      foreach ($this->authHeaders as $cookieName => $cookieData) {
+        $this->authCookies[$cookieName] = $cookieName.'='.$cookieData['value']; // already urlencoded
+        //error_log(__METHOD__.' '.$cookieData['origin']);
       }
     }
   }
@@ -65,28 +73,35 @@ class App
     return $this->dwProto.'://'.$this->dwHost.$this->dwPort.$this->dwPath;
   }
 
-  private function cleanCookies()
+  private function updateAuthHeaders($responseHdr)
   {
-    $this->authHeaders = array();
-    $this->reqHeaders = array();
-    foreach ($_COOKIE as $cookie => $value) {
-      if (preg_match('/^(DokuWiki|DW).*/', $cookie)) {
-        unset($_COOKIE[$cookie]);
+    foreach ($responseHdr as $header) {
+      if (preg_match('/^Set-Cookie:\s*('.self::COOKIE_RE.')\s*=\s*([^;]+)\s*;/i', $header, $match)) {
+        $cookieName = $match[1];
+        $cookieValue = $match[2];
+        $this->authHeaders[$cookieName] = array(
+          'value' => $cookieValue,
+          'origin' => $header
+          );
+        $this->authCookies[$cookieName] = $cookieName.'='.$cookieValue; // already urlencoded
+        //error_log(__METHOD__.' '.$header);
       }
     }
+    \OC::$server->getSession()->set(self::SESSION_AUTHKEY, $this->authHeaders);
   }
-
+  
   private function xmlRequest($method, $data)
   {
+    // error_log(__METHOD__.' '.$method);
     // Generate the request
     $request = xmlrpc_encode_request($method, $data, array("encoding" => "UTF-8",
                                                            "escaping" => "markup",
                                                            "version" => "xmlrpc"));
     // Construct the header with any relevant cookies
     $httpHeader = "Content-Type: text/xml; charset=UTF-8".
-      (empty($this->reqHeaders)
+      (empty($this->authCookies)
        ? ""
-       : "\r\n"."Cookie: ".join("; ", $this->reqHeaders));
+       : "\r\n"."Cookie: ".join("; ", $this->authCookies));
 
     // Compose the context with method, headers and data
     $context = stream_context_create(array('http' => array(
@@ -102,7 +117,7 @@ class App
       $responseHdr = $http_response_header;
     } else {
       $result = '';
-      $responseHdr = '';
+      $responseHdr = array();
     }
 
     $response = xmlrpc_decode($result);
@@ -120,14 +135,10 @@ class App
       // Response _should_ be a single integer: if 0, login
       // unsuccessful, if 1: got it.
       if ($response == 1) {
+        // fetch new auth headers
         $this->authHeaders = array();
-        // Store and duplicate set cookies for forwarding to the users web client
-        foreach ($responseHdr as $header) {
-          if (preg_match('/^Set-Cookie:\s*(DokuWiki|DW).*/', $header)) {
-            $this->authHeaders[] = $header;
-            $this->authHeaders[] = preg_replace('|path=([^;]+);|i', 'path='.\OC::$WEBROOT.'/;', $header);
-          }
-        }
+        $this->authCookies = array();
+        $this->updateAuthHeaders($responseHdr);
         \OCP\Util::writeLog(self::APP_NAME,
                             "XMLRPC method \"$method\" executed with success. Got cookies ".
                             print_r($this->authHeaders, true).
@@ -144,7 +155,9 @@ class App
         return false;
       }
     }
-    
+
+    $this->updateAuthHeaders($responseHdr);
+
     return $result == '' ? false : $response;
   }  
 
@@ -162,7 +175,6 @@ class App
    */
   function login($username, $password)
   {
-    $this->cleanCookies();
     if (!empty($_POST["remember_login"])) {
       $result = $this->xmlRequest("dokuwiki.stickylogin", array($username, $password));
       if ($result !== false) {
@@ -210,7 +222,7 @@ class App
   }
 
   /**
-   * Parse a cookie header in order to obtain name, date of
+   * Parse a cookie header in order to obtain name, value, date of
    * expiry and path.
    *
    * @parm cookieHeader Guess what
@@ -221,30 +233,33 @@ class App
    */
   static private function parseCookie($cookieHeader)
   {
-    if (preg_match('/^Set-Cookie:\s*([^=]+)=([^;]+)(;|$)(\s*(expires)=([^;]+)(;|$))?(\s*(path)=([^;]+)(;|$))?/i', $cookieHeader, $match)) {
-      array_shift($match); // get rid of matched string
-      $name = array_shift($match);
-      $value = array_shift($match);
-      $path = false;
-      $stamp = false;
-      while (count($match) > 0) {
-        $token = array_shift($match);
-        switch ($token) {
-        case 'expires':
-          $stamp = array_shift($match);
-          break;
-        case 'path':
-          $path = array_shift($match);
-        }
-      }
-      return array('name' => $name,
-                   'value' => $value,
-                   'expires' => $stamp,
-                   'path' => $path);
+    if (!preg_match('/Set-Cookie:\s*(.*)$/i', $cookieHeader, $match)) {
+      return false;
     }
-    return false;
+    $cookieData = $match[1];
+    $cookieParts = preg_split('/\s*;\s*/', $cookieData);
+    if (empty($cookieParts)) {
+      return false;
+    }
+    $cookie = array();
+    $nv = explode('=', array_shift($cookieParts));
+    if (count($nv) == 1) {
+      $nv[] = '';
+    }
+    $cookie['name'] = $nv[0];
+    $cookie['value'] = $nv[1];
+
+    foreach ($cookieParts as $part) {
+      $nv = explode('=', $part);
+      if (count($nv) == 1) {
+        $nv[1] = true;
+      }
+      $attributes[$nv[0]] = $nv[1];
+    }
+    $cookie['attributes'] = $attributes;
+    return $cookie;
   }
-        
+
   /**
    * Normally, we do NOT want to replace cookies, we need two
    * paths: one for the RC directory, one for the OC directory
@@ -265,27 +280,19 @@ class App
     $found = false;
     foreach(headers_list() as $header) {
       $cookie = self::parseCookie($header);
-      if ($cookie !== false) {
-        if ($cookie['name'] == $thisCookie['name'] &&
-            $cookie['value'] == $thisCookie['value'] &&
-            $cookie['expires'] == $thisCookie['expires'] &&
-            $cookie['path'] == $thisCookie['path']) {
-          $found = true;
-        }
+      if ($cookie === $thisCookie) {
+        return;
       }
     }
-    if (!$found && $thisCookie['value'] != 'deleted') {
-      header($cookieHeader, false);
-    }
+    header($cookieHeader, false);
   }     
 
   /**Send authentication headers previously aquired
    */
-  function emitAuthHeaders() 
+  function emitAuthHeaders()
   {
-    foreach ($this->authHeaders as $header) {
-      //header($header, false);
-      self::addCookie($header);
+    foreach ($this->authHeaders as $cookieName => $cookieData) {
+      self::addCookie($cookieData['origin']);
     }
   }
 };
